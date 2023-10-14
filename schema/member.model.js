@@ -79,7 +79,7 @@ const memberSchema = new mongoose.Schema({
         required: false,
         default: 0,
     },
-    {timestamps: true}  // createdAt, updatedAt
+    timestamps: true, // createdAt, updatedAt
 });
 
 module.exports = mongoose.model("Member", memberSchema);
