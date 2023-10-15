@@ -1,6 +1,8 @@
 const MemberModel = require("../schema/member.model");
 const Definer = require("../lib/mistake");
 const assert = require("assert");
+const bcrypt = require("bcryptjs");
+// var hash = bcrypt.hashSync("B4c0//", salt);
 
 class Member {
     constructor() {
@@ -9,17 +11,18 @@ class Member {
 
     async signupData(input) {
         try {
-            let result;
+            const salt = await bcrypt.genSalt();
+            input.mb_password = await bcrypt.hash(input.mb_password, salt);
             const new_member = new this.memberModel(input);
-            // const result = await new_member.save();
-            try {
-                result = await new_member.save();
-            } catch (mongo_err) {
-                console.log(mongo_err);
-                throw new Error(Definer.auth_err1);
-            }
+            const result = await new_member.save();
 
-            console.log(result);
+            // let result;
+            // try {
+            //     result = await new_member.save();
+            // } catch (mongo_err) {
+            //     console.log(mongo_err);
+            //     throw new Error(Definer.auth_err1);
+            // }
 
             result.mb_password = "";
             return result;
@@ -40,7 +43,10 @@ class Member {
             assert.ok(member, Definer.auth_err3);
             // console.log(member);
 
-            const isMatch = input.mb_password === member.mb_password;
+            const isMatch = await bcrypt.compare(
+                input.mb_password,
+                member.mb_password
+            );
             assert.ok(isMatch, Definer.auth_err4);
 
             return await this.memberModel
