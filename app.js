@@ -15,6 +15,7 @@ app.set("views", "views");
 app.set("view engine", "ejs");
 
 // 4: Routing codes
-app.use("/", router);
+// app.use("/resto", router_bssr);  // for admin and restaurant users
+app.use("/", router); // for clients
 
 module.exports = app;
