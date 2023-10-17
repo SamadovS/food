@@ -14,15 +14,16 @@ class Member {
             const salt = await bcrypt.genSalt();
             input.mb_password = await bcrypt.hash(input.mb_password, salt);
             const new_member = new this.memberModel(input);
-            const result = await new_member.save();
+            // const result = await new_member.save();
 
-            // let result;
-            // try {
-            //     result = await new_member.save();
-            // } catch (mongo_err) {
-            //     console.log(mongo_err);
-            //     throw new Error(Definer.auth_err1);
-            // }
+            let result;
+            try {
+                result = await new_member.save();
+                console.log(result);
+            } catch (mongo_err) {
+                console.log(mongo_err);
+                throw new Error(Definer.auth_err1);
+            }
 
             result.mb_password = "";
             return result;
