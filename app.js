@@ -2,6 +2,7 @@ console.log("Starting Web Server");
 const express = require("express");
 const app = express();
 const router = require("./router");
+const router_bssr = require("./router_bssr");
 
 // 1: Entry codes
 app.use(express.static("public"));
@@ -15,7 +16,7 @@ app.set("views", "views");
 app.set("view engine", "ejs");
 
 // 4: Routing codes
-// app.use("/resto", router_bssr);  // for admin and restaurant users
+app.use("/resto", router_bssr); // for admin and restaurant users
 app.use("/", router); // for clients
 
 module.exports = app;

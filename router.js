@@ -2,6 +2,10 @@ const express = require("express");
 const router = express.Router();
 const memberController = require("./controllers/memberController");
 
+/**********************************
+ *          REST API              *
+ *********************************/
+
 // memberga oid routerlar
 
 router.post("/signup", memberController.signup);

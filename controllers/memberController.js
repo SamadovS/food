@@ -6,7 +6,7 @@ memberController.signup = async (req, res) => {
     try {
         console.log("POST: cont/signup");
         const data = req.body;
-        console.log("body:", req.body); // nick+password ni qaytaradi
+        console.log("body:", req.body);
         (member = new Member()), (new_member = await member.signupData(data));
 
         res.json({ state: "succeed", data: new_member });
