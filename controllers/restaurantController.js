@@ -2,6 +2,18 @@ const Member = require("../models/Member");
 
 let restaurantController = module.exports;
 
+restaurantController.getMyRestaurantData = async (req, res) => {
+    try {
+        console.log("GET: cont/getMyRestaurantData");
+        // todo: get my restaurant product
+
+        res.render("restaurant-menu");
+    } catch (err) {
+        console.log(`ERROR: cont/getMyRestaurantData, ${err.message}`);
+        res.json({ state: "failed", message: err.message });
+    }
+};
+
 restaurantController.getSignupMyRestaurant = async (req, res) => {
     try {
         console.log("GET: cont/getSignupMyRestaurant");
@@ -15,15 +27,15 @@ restaurantController.getSignupMyRestaurant = async (req, res) => {
 restaurantController.signupProcess = async (req, res) => {
     try {
         console.log("POST: cont/signup");
-        const data = req.body;
-        console.log("body:", req.body);
-        const member = new Member();
-        const new_member = await member.signupData(data);
+        const data = req.body,
+            member = new Member(),
+            new_member = await member.signupData(data);
 
-        res.json({ state: "succeed", data: new_member });
+        req.session.member = new_member;
+        res.redirect("/resto/products/menu");
     } catch (err) {
         console.log(`ERROR: cont/signup, ${err.message}`);
-        res.json({ state: "failed", message: err.message });
+        res.json({ state: "fail", message: err.message });
     }
 };
 
@@ -40,13 +52,14 @@ restaurantController.getLoginMyRestaurant = async (req, res) => {
 restaurantController.loginProcess = async (req, res) => {
     try {
         console.log("POST: cont/login");
-        const data = req.body;
-        console.log("body:", req.body);
+        const data = req.body,
+            member = new Member(),
+            result = await member.loginData(data);
 
-        const member = new Member();
-        const result = await member.loginData(data);
-
-        res.json({ state: "succeed", data: result });
+        req.session.member = result;
+        req.session.save(function () {
+            res.redirect("/resto/products/menu");
+        });
     } catch (err) {
         console.log(`ERROR: cont/login, ${err.message}`);
         res.json({ state: "failed", message: err.message });
@@ -58,4 +71,4 @@ restaurantController.logoutProcess = (req, res) => {
     res.send("You are in Logout Page");
 };
 
-module.exports = restaurantController;
+// module.exports = restaurantController;
