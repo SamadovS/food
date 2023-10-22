@@ -71,4 +71,10 @@ restaurantController.logoutProcess = (req, res) => {
     res.send("You are in Logout Page");
 };
 
-// module.exports = restaurantController;
+restaurantController.checkSession = (req, res) => {
+    if (req.session?.member) {
+        res.json({ state: "succeed", data: req.session.member });
+    } else {
+        res.json({ state: "fail", message: "You are not authenticated" });
+    }
+};

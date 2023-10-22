@@ -16,6 +16,7 @@ router_bssr
     .post("/login", restaurantController.loginProcess);
 
 router_bssr.get("/logout", restaurantController.logoutProcess);
+router_bssr.get("/check-me", restaurantController.checkSession);
 
 router_bssr.get("/products/menu", restaurantController.getMyRestaurantData);
 
