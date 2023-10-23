@@ -71,7 +71,7 @@ restaurantController.logoutProcess = (req, res) => {
     res.send("You are in Logout Page");
 };
 
-restaurantController.validateAuthRestaurant = async (req, res, next) => {
+restaurantController.validateAuthRestaurant = (req, res, next) => {
     if (req.session?.member?.mb_type === "RESTAURANT") {
         req.member = req.session.member;
         next();
