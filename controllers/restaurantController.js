@@ -1,18 +1,27 @@
 const Member = require("../models/Member");
 const Product = require("../models/Product");
+// controller butun proccessni boshqarib, tegishli madellarga vazifa yuklaydi.
+let restaurantController = module.exports; //memberControllerga turli xil metodlarni yuklash mumkin
 
-let restaurantController = module.exports;
+restaurantController.home = async (req, res) => {
+    try {
+        console.log("GET: cont/home");
+        res.render("home-page");
+    } catch (err) {
+        console.log(`ERROR, cont/home, ${err.message} `);
+        res.json({ state: "fail", message: err.message });
+    }
+};
 
 restaurantController.getMyRestaurantProducts = async (req, res) => {
     try {
         console.log("GET: cont/getMyRestaurantProducts");
-        // todo: get my restaurant product
         const product = new Product();
         const data = await product.getAllProductsDataResto(res.locals.member);
         res.render("restaurant-menu", { restaurant_data: data });
     } catch (err) {
-        console.log(`ERROR: cont/getMyRestaurantProducts, ${err.message}`);
-        res.json({ state: "failed", message: err.message });
+        console.log(`ERROR, cont/getMyRestaurantProducts, ${err.message} `);
+        res.json({ state: "fail", message: err.message });
     }
 };
 
@@ -21,11 +30,10 @@ restaurantController.getSignupMyRestaurant = async (req, res) => {
         console.log("GET: cont/getSignupMyRestaurant");
         res.render("signup");
     } catch (err) {
-        console.log(`ERROR: cont/getSignupMyRestaurant, ${err.message}`);
-        res.json({ state: "failed", message: err.message });
+        console.log(`ERROR, cont/getSignupMyRestaurant, ${err.message} `);
+        res.json({ state: "fail", message: err.message });
     }
 };
-
 restaurantController.signupProcess = async (req, res) => {
     try {
         console.log("POST: cont/signup");
@@ -33,11 +41,12 @@ restaurantController.signupProcess = async (req, res) => {
             member = new Member(),
             new_member = await member.signupData(data);
 
-        req.session.member = new_member;
+        req.session.member = new_member; //app js da yasalgan session = memberiga signup data= resultini save qilamiz.
+
         res.redirect("/resto/products/menu");
     } catch (err) {
-        console.log(`ERROR: cont/signup, ${err.message}`);
         res.json({ state: "fail", message: err.message });
+        console.log(`ERROR, cont/signup, ${err.message} `);
     }
 };
 
@@ -46,8 +55,8 @@ restaurantController.getLoginMyRestaurant = async (req, res) => {
         console.log("GET: cont/getLoginMyRestaurant");
         res.render("login-page");
     } catch (err) {
-        console.log(`ERROR: cont/getLoginMyRestaurant, ${err.message}`);
-        res.json({ state: "failed", message: err.message });
+        console.log(`ERROR, cont/getLoginMyRestaurant, ${err.message} `);
+        res.json({ state: "fail", message: err.message });
     }
 };
 
@@ -59,32 +68,32 @@ restaurantController.loginProcess = async (req, res) => {
             result = await member.loginData(data);
 
         req.session.member = result;
-        req.session.save(function () {
+        req.session.save(() => {
             res.redirect("/resto/products/menu");
         });
     } catch (err) {
-        console.log(`ERROR: cont/login, ${err.message}`);
-        res.json({ state: "failed", message: err.message });
+        res.json({ state: "fail", message: err.message });
+        console.log(`ERROR, cont/login, ${err.message} `);
     }
 };
 
-restaurantController.logoutProcess = (req, res) => {
-    console.log("POST cont.logout");
-    res.send("You are in Logout Page");
+restaurantController.logout = (req, res) => {
+    console.log("GET cont.logout");
+    res.send("we are in logout page");
 };
 
 restaurantController.validateAuthRestaurant = (req, res, next) => {
     if (req.session?.member?.mb_type === "RESTAURANT") {
-        req.member = req.session.member;
+        req.member = req.session.member; //brauser cockiesga yozadi
         next();
     } else
         res.json({
             state: "fail",
-            message: "only authenticated members with restaurant type",
+            error: "only authenticated members with restaurant type",
         });
 };
 
-restaurantController.checkSession = (req, res) => {
+restaurantController.checkSessions = (req, res) => {
     if (req.session?.member) {
         res.json({ state: "succeed", data: req.session.member });
     } else {
