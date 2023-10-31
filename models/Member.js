@@ -1,30 +1,24 @@
-const MemberModel = require("../schema/member.model");
+// MEMBER SERVICE MODEL (file nomi js shu fileni class sifatida qabul qilishi uchun bosh harfda yozildi)
 const Definer = require("../lib/mistake");
+const MemberModel = require("../schema/member.model");
 const assert = require("assert");
 const bcrypt = require("bcryptjs");
-// var hash = bcrypt.hashSync("B4c0//", salt);
-
 class Member {
     constructor() {
-        this.memberModel = MemberModel;
+        this.memberModel = MemberModel; //(aslida mongodb= classi)
     }
-
     async signupData(input) {
         try {
             const salt = await bcrypt.genSalt();
             input.mb_password = await bcrypt.hash(input.mb_password, salt);
-            const new_member = new this.memberModel(input);
-            // const result = await new_member.save();
 
+            const new_member = new this.memberModel(input);
             let result;
             try {
                 result = await new_member.save();
-                console.log(result);
             } catch (mongo_err) {
-                console.log(mongo_err);
                 throw new Error(Definer.auth_err1);
             }
-
             result.mb_password = "";
             return result;
         } catch (err) {
@@ -40,10 +34,8 @@ class Member {
                     { mb_nick: 1, mb_password: 1 }
                 )
                 .exec();
-
             assert.ok(member, Definer.auth_err3);
-            // console.log(member);
-
+            console.log(member);
             const isMatch = await bcrypt.compare(
                 input.mb_password,
                 member.mb_password
@@ -51,12 +43,8 @@ class Member {
             assert.ok(isMatch, Definer.auth_err4);
 
             return await this.memberModel
-                .findOne({
-                    mb_nick: input.mb_nick,
-                })
+                .findOne({ mb_nick: input.mb_nick })
                 .exec();
-
-            // console.log("member: ", member);
         } catch (err) {
             throw err;
         }

@@ -20,7 +20,7 @@ router_bssr.get("/check-me", restaurantController.checkSessions);
 
 router_bssr.get(
     "/products/menu",
-    // restaurantController.validateAuthRestaurant,
+    restaurantController.validateAuthRestaurant,
     restaurantController.getMyRestaurantProducts
 );
 router_bssr.post(
