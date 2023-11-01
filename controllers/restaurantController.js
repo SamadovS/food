@@ -1,5 +1,7 @@
+const assert = require("assert");
 const Member = require("../models/Member");
 const Product = require("../models/Product");
+const Definer = require("../lib/mistake");
 // controller butun proccessni boshqarib, tegishli madellarga vazifa yuklaydi.
 let restaurantController = module.exports; //memberControllerga turli xil metodlarni yuklash mumkin
 
@@ -37,12 +39,22 @@ restaurantController.getSignupMyRestaurant = async (req, res) => {
 restaurantController.signupProcess = async (req, res) => {
     try {
         console.log("POST: cont/signupProcess");
-        const data = req.body,
-            member = new Member(),
-            new_member = await member.signupData(data);
+        assert(req.file, Definer.general_err3);
 
-        req.session.member = new_member; //app js da yasalgan session = memberiga signup data= resultini save qilamiz.
+        // console.log("body:", req.body);
+        // console.log("file:", req.file);
+        // assert(req.file, Definer.general_err3);
+        // res.send("success");
 
+        let new_member = req.body;
+        new_member.mb_type = "RESTAURANT";
+        new_member.mb_image = req.file.path;
+
+        const member = new Member();
+        const result = await member.signupData(new_member);
+        assert(result, Definer.general_err1);
+
+        req.session.member = result;
         res.redirect("/resto/products/menu");
     } catch (err) {
         res.json({ state: "fail", message: err.message });

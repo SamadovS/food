@@ -214,6 +214,7 @@ body {
 
 .filebox {
     margin-top: 25px;
+    height: 55px;
     display: flex;
 }
 
@@ -228,7 +229,7 @@ body {
 
 .filebox label {
     width: 140px;
-    height: 55px;
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -246,7 +247,7 @@ body {
     position: relative;
     padding: 20px;
     width: 85%;
-    height: 55px;
+    height: 100%;
     display: flex;
     background: #dddddd;
     border: 1px solid #dddddd;
