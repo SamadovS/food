@@ -17,7 +17,7 @@ restaurantController.getMyRestaurantProducts = async (req, res) => {
     try {
         console.log("GET: cont/getMyRestaurantProducts");
         const product = new Product();
-        const data = await product.getAllProductsDataResto(req.member);
+        const data = await product.getAllProductsDataResto(res.locals.member);
         res.render("restaurant-menu", { restaurant_data: data });
     } catch (err) {
         console.log(`ERROR, cont/getMyRestaurantProducts, ${err.message} `);
@@ -42,10 +42,11 @@ restaurantController.signupProcess = async (req, res) => {
             new_member = await member.signupData(data);
 
         req.session.member = new_member; //app js da yasalgan session = memberiga signup data= resultini save qilamiz.
+
         res.redirect("/resto/products/menu");
     } catch (err) {
         res.json({ state: "fail", message: err.message });
-        console.log(`ERROR, cont/signup, ${err.message} `);
+        console.log(`ERROR, cont/signupProcess, ${err.message} `);
     }
 };
 
@@ -67,14 +68,14 @@ restaurantController.loginProcess = async (req, res) => {
             result = await member.loginData(data);
 
         req.session.member = result;
-        req.session.save(() => {
+        req.session.save(function () {
             result.mb_type === "ADMIN"
-                ? res.redirect("/resto/all-restourant")
+                ? res.redirect("/resto/all-restaurant")
                 : res.redirect("/resto/products/menu");
         });
     } catch (err) {
         res.json({ state: "fail", message: err.message });
-        console.log(`ERROR, cont/login, ${err.message} `);
+        console.log(`ERROR, cont/loginProcess, ${err.message} `);
     }
 };
 
