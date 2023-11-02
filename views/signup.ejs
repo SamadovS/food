@@ -159,14 +159,17 @@
                 mb_phone == '' ||
                 mb_password == '' ||
                 mb_confirm_password == ''
-                ) {
+            ) {
                 alert(`Iltimos hamma ma'lumotlarni kiriting!`)
+                return false
             } else if (mb_password !== mb_confirm_password) {
                 alert(`Iltimos passwordni to'g'ri kiriting!`)
+                return false
             }
 
             if(!restaurant_img) {
                 alert(`Iltimos rasmni yuklang!`)
+                return false
             }
 
 
