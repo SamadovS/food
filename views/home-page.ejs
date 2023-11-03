@@ -31,6 +31,8 @@
                 <a class="nav-link active" href="/resto/products/menu"
                     >MyResto</a
                 >
+            </li>
+            <li class="nav-item" style="cursor: pointer">
                 <a
                     class="nav-link active"
                     href="/resto/logout"
@@ -41,7 +43,7 @@
             <% } %>
         </ul>
     </div>
-
+    <!-- HOME PAGE ANIMATION SECTION START -->
     <div class="animation-wrapper">
         <div class="sphere-animation">
             <svg
@@ -128,8 +130,9 @@
             </svg>
         </div>
     </div>
-
+    <!-- HOME PAGE ANIMATION SECTION END -->
     <script>
+        // HOME PAGE ANIMATION SCRIPT START
         function fitElementToParent(el, padding) {
             let timeout = null;
             function resize() {
@@ -231,6 +234,7 @@
 
             init();
         })();
+        // HOME PAGE ANIMATION SCRIPT END
     </script>
 </body>
 <%-include('includes/footer')%>
