@@ -26,9 +26,9 @@ productController.addNewProduct = async (req, res) => {
         // yuqorida req fileni ichidagi filepathni array qilib request bodyga qo'shib beradi.
         const result = await product.addNewProductData(data, req.member);
         const html = `<script>
-                    alert(new dish added successfully)
-                    window.location.replace('/resto/products/menu')
-                  </sctipt>`;
+                    alert("new product ${data.product_name} added successfully");
+                    window.location.replace('/resto/products/menu');
+                  </script>`;
         res.end(html);
     } catch (err) {
         console.log(`ERROR, cont/addNewProduct, ${err.message} `);
@@ -46,7 +46,7 @@ productController.updateChosenProduct = async (req, res) => {
             req.body,
             req.member._id
         );
-        await res.json({ state: "sucess", data: result });
+        await res.json({ state: "success", data: result });
     } catch (err) {
         console.log(`ERROR, cont/updateChosenProduct, ${err.message} `);
         res.json({ state: "fail", message: err.message });

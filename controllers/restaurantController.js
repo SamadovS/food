@@ -23,6 +23,7 @@ restaurantController.getMyRestaurantProducts = async (req, res) => {
         res.render("restaurant-menu", { restaurant_data: data });
     } catch (err) {
         console.log(`ERROR, cont/getMyRestaurantProducts, ${err.message} `);
+        // res.json({ state: "fail", message: err.message });
         res.redirect("/resto");
     }
 };
@@ -93,8 +94,8 @@ restaurantController.logout = (req, res) => {
             res.redirect("/resto");
         });
     } catch (err) {
+        res.redirect("/resto/login");
         console.log(`ERROR, cont/login, ${err.message} `);
-        res.json({ state: "fail", message: err.message });
     }
 };
 
@@ -102,11 +103,11 @@ restaurantController.validateAuthRestaurant = (req, res, next) => {
     if (req.session?.member?.mb_type === "RESTAURANT") {
         req.member = req.session.member; //brauser cockiesga yozadi
         next();
-    } else
-        res.json({
-            state: "fail",
-            error: "only authenticated members with restaurant type",
-        });
+    } else res.redirect("/resto");
+    // res.json({
+    //   state: "fail",
+    //   error: "only authenticated members with restaurant type",
+    // });
 };
 
 restaurantController.checkSessions = (req, res) => {
