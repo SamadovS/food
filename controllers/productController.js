@@ -18,11 +18,15 @@ productController.addNewProduct = async (req, res) => {
         console.log("POST: cont/addNewProduct");
         assert(req.files, Definer.general_err3);
         const product = new Product();
-        let data = req.body; //req.bodyni ichida file path yoq. U reqfilesni ichida keladi.
+
+        let data = req.body; //req.body ni ichida file path yoq. U req.filesni ichida keladi.
         console.log(req.files);
+
         data.product_images = req.files.map((ele) => {
-            return ele.path;
+            return ele.path.replace(/\\/g, "/"); // regular expression => regex
+            // bu usul windowsda xato borligi uchun foydalandik
         });
+
         // yuqorida req fileni ichidagi filepathni array qilib request bodyga qo'shib beradi.
         const result = await product.addNewProductData(data, req.member);
         const html = `<script>

@@ -176,7 +176,7 @@ body {
     border-radius: 8px;
 }
 
-.media-frame {
+.media_frame {
     position: relative;
     margin-top: 15px;
     width: 100%;
@@ -186,7 +186,7 @@ body {
     justify-content: space-between;
 }
 
-.media-frame .upload_img_frame {
+.media_frame .upload_img_frame {
     position: relative;
     width: 275px;
     height: 93%;
@@ -194,7 +194,7 @@ body {
     border-radius: 15px;
 }
 
-.media-frame .upload_container {
+.media_frame .upload_container {
     position: relative;
     margin-left: 30px;
     width: 75%;

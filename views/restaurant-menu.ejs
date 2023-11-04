@@ -37,8 +37,8 @@
               <td><%= value.product_name%></td>
               <td><%= value.product_collection%></td>
               <td>
-                <%= value.product_collection === 'drink'? value.product_volume :
-                value.product_size %>
+                <%= value.product_collection === 'drink'? 
+                value.product_volume : value.product_size %>
               </td>
               <td><%= value.product_price%></td>
               <td><%= value.product_left_cnt%></td>
@@ -49,7 +49,7 @@
                 </select>
               </td>
             </tbody>
-            <%});%>
+            <% }); %>
           </table>
           <div class="long_input" style="align-items: flex-end; margin-bottom: 25px;">
           <button class="btn btn-primary hiding_btn">Taom Qo'shish</button>
@@ -177,11 +177,13 @@
       // Product Status Changer
 
       $(".new_product_status").on("change", async function(e){
+        <!-- console.log("event", e); -->
         const id = e.target.id;
         const product_status = $(`#${id}.new_product_status`).val();
         try{
           const response = await axios.post(`/resto/products/edit/${id}`, 
           {id: id, product_status: product_status});
+          // kutish bo'ladi
           const result = response.data;
           console.log("result: ", result);
           if(result.state == 'success'){
