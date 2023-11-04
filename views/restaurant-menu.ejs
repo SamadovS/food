@@ -1,16 +1,69 @@
 <%- include('includes/header') %>
-
+<link rel="stylesheet" type="text/css" href="/css/menu.css" />
 <body>
-    <h1>My Restaurant page</h1>
+    <div id="main_container">
+        <div class="group_name">
+            <ul class="nav justify-content-center">
+                <li class="nav-item" style="cursor: pointer">
+                    <a class="nav-link active" href="/resto">Home</a>
+                </li>
+                <li class="nav-item" style="cursor: pointer">
+                    <a class="nav-link" href="/resto/products/menu">MyResto</a>
+                </li>
+                <li class="nav-item" style="cursor: pointer">
+                    <a class="nav-link active" href="/resto/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
 
-    <% if(!member) { %>
-    <h2>siz authenticated emassiz.</h2>
-    <% } else { %>
-    <h1>
-        siz authenticated bo'lgansiz va sizning nickingiz: <%= member.mb_nick%>.
-        <p>sizning telefoningiz: <%= member.mb_phone%></p>
-    </h1>
-    <% } %>
+        <div class="restaurant_menu_frame">
+            <div class="restaurant_container">
+                <div class="dishs_table">
+                    <span class="new_dish_txt">
+                        <%= member.mb_nick.toUpperCase() %> Taomlar menyusi
+                    </span>
+                    <table class="table table-bordered table-hover">
+                        <thead class="thead-light">
+                            <th scope="col">T/r</th>
+                            <th scope="col">Taom Nomi</th>
+                            <th scope="col">Taom Turi</th>
+                            <th scope="col">Taom Hajmi</th>
+                            <th scope="col">Taom Narhi</th>
+                            <th scope="col">Taom Qoldiq Miqdori</th>
+                            <th scope="col">Taom Holati</th>
+                        </thead>
+                        <% restaurant_data.map((value, key) => { %>
+                        <tbody style="background: white">
+                            <td><%= key + 1 %></td>
+                            <td><%= value.product_name %></td>
+                            <td><%= value.product_collection %></td>
+                            <td>
+                                <%= value.product_collection === 'drink' ?
+                                value.product_volume : value.product_size %>
+                            </td>
+                            <td><%= value.product_price %></td>
+                            <td><%= value.product_left_cnt %></td>
+                            <td>
+                                <select id="<%= value._id %>" class="spec_select">
+                                    <option value="PROCESS" <%= value.product_status === 'PROCESS' ? 'selected' : '' %>>PROCESS</option>
+                                    <option value="PAUSED" <%= value.product_status === 'PAUSED' ? 'selected' : '' %>>PAUSED</option>
+                                </select>
+                            </td>
+                        </tbody>
+                        <% }) %>
+                    </table>
+                </div>
+
+                <form onsubmit="return validateFomr()" action="resto/products/create" method="POST" 
+                    class="dish_container" enctype="multipart/form-data">
+                    <div class="long_input" style="align-items: flex-end; margin-bottom: 25px;">
+                        <span class="new_dish_txt">Yangi Taom</span>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
 </body>
 
 <%- include('includes/footer') %>
