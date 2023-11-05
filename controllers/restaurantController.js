@@ -141,10 +141,27 @@ restaurantController.getAllRestaurants = async (req, res) => {
         const restaurant = new Restaurant();
         const restaurant_data = await restaurant.getAllRestaurantsData();
         console.log("restaurant_data:", restaurant_data);
+
         // todo: hamma restaurantlarni db dan chaqiramiz
         res.render("all-restaurants", { restaurant_data: restaurant_data });
     } catch (err) {
         console.log(`ERROR, cont/getAllRestaurants, ${err.message} `);
+        res.json({ state: "fail", message: err.message });
+    }
+};
+
+restaurantController.updateRestaurantByAdmin = async (req, res) => {
+    try {
+        console.log("GET cont/updateRestaurantByAdmin");
+
+        const restaurant = new Restaurant();
+        const result = await restaurant.updateRestaurantByAdminData(req.body);
+        await res.json({ state: "success", data: result });
+
+        // todo: hamma restaurantlarni db dan chaqiramiz
+        // res.render("all-restaurants", { restaurant_data: restaurant_data });
+    } catch (err) {
+        console.log(`ERROR, cont/updateRestaurantByAdmin, ${err.message} `);
         res.json({ state: "fail", message: err.message });
     }
 };
