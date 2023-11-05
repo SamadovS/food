@@ -140,7 +140,7 @@ restaurantController.getAllRestaurants = async (req, res) => {
 
         const restaurant = new Restaurant();
         const restaurant_data = await restaurant.getAllRestaurantsData();
-        console.log("restaurant_data:", restaurant_data);
+        // console.log("restaurant_data:", restaurant_data);
 
         // todo: hamma restaurantlarni db dan chaqiramiz
         res.render("all-restaurants", { restaurant_data: restaurant_data });
