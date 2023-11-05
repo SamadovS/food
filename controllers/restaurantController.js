@@ -77,7 +77,7 @@ restaurantController.loginProcess = async (req, res) => {
         req.session.member = result; //session ichida member obj hosil qilib resultni yuklaymiz
         req.session.save(() => {
             result.mb_type === "ADMIN"
-                ? res.redirect("/resto/all-restourant")
+                ? res.redirect("/resto/all-restaurant")
                 : res.redirect("/resto/products/menu");
         });
     } catch (err) {
@@ -103,11 +103,13 @@ restaurantController.validateAuthRestaurant = (req, res, next) => {
     if (req.session?.member?.mb_type === "RESTAURANT") {
         req.member = req.session.member; //brauser cockiesga yozadi
         next();
-    } else res.redirect("/resto");
-    // res.json({
-    //   state: "fail",
-    //   error: "only authenticated members with restaurant type",
-    // });
+    }
+    // res.redirect("/resto");
+    else
+        res.json({
+            state: "fail",
+            error: "only authenticated members with restaurant type",
+        });
 };
 
 restaurantController.checkSessions = (req, res) => {
@@ -115,5 +117,30 @@ restaurantController.checkSessions = (req, res) => {
         res.json({ state: "succeed", data: req.session.member });
     } else {
         res.json({ state: "fail", message: "You are not authenticated" });
+    }
+};
+
+restaurantController.validateAdmin = (req, res, next) => {
+    if (req.session?.member?.mb_type === "ADMIN") {
+        req.member = req.session.member; //brauser cockiesga yozadi
+        next();
+    } else {
+        const html = `<script>
+            alert("Admin page: Permission denied!");
+            window.location.replace('/resto');
+          </script>`;
+        res.end(html);
+    }
+};
+
+restaurantController.getAllRestaurants = (req, res) => {
+    try {
+        console.log("GET cont/getAllRestaurants");
+        // todo: hamma restaurantlarni db dan chaqiramiz
+
+        res.render("all-restaurants");
+    } catch (err) {
+        console.log(`ERROR, cont/getAllRestaurants, ${err.message} `);
+        res.json({ state: "fail", message: err.message });
     }
 };
