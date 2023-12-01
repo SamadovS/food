@@ -11,45 +11,45 @@ const uploader_member = require("./utils/upload-multer")("members");
 router_bssr.get("/", restaurantController.home);
 
 router_bssr
-    .get("/sign-up", restaurantController.getSignupMyRestaurant)
-    .post(
-        "/sign-up",
-        uploader_member.single("restaurant_img"),
-        restaurantController.signupProcess
-    );
+  .get("/sign-up", restaurantController.getSignupMyRestaurant)
+  .post(
+    "/sign-up",
+    uploader_member.single("restaurant_img"),
+    restaurantController.signupProcess
+  );
 router_bssr
-    .get("/login", restaurantController.getLoginMyRestaurant)
-    .post("/login", restaurantController.loginProcess);
+  .get("/login", restaurantController.getLoginMyRestaurant)
+  .post("/login", restaurantController.loginProcess);
 router_bssr.get("/logout", restaurantController.logout);
 router_bssr.get("/check-me", restaurantController.checkSessions);
 
 router_bssr.get(
-    "/products/menu",
-    restaurantController.validateAuthRestaurant,
-    restaurantController.getMyRestaurantProducts
+  "/products/menu",
+  restaurantController.validateAuthRestaurant,
+  restaurantController.getMyRestaurantProducts
 );
 router_bssr.post(
-    "/products/create",
-    restaurantController.validateAuthRestaurant,
-    uploader_product.array("product_images", 5),
-    productController.addNewProduct
+  "/products/create",
+  restaurantController.validateAuthRestaurant,
+  uploader_product.array("product_images", 5),
+  productController.addNewProduct
 );
 router_bssr.post(
-    "/products/edit/:id",
-    restaurantController.validateAuthRestaurant,
-    productController.updateChosenProduct
+  "/products/edit/:id",
+  restaurantController.validateAuthRestaurant,
+  productController.updateChosenProduct
 );
 
 router_bssr.get(
-    "/all-restaurant",
-    restaurantController.validateAdmin,
-    restaurantController.getAllRestaurants
+  "/all-restaurant",
+  restaurantController.validateAdmin,
+  restaurantController.getAllRestaurants
 );
 
 router_bssr.post(
-    "/all-restaurant/edit",
-    restaurantController.validateAdmin,
-    restaurantController.updateRestaurantByAdmin
+  "/all-restaurant/edit",
+  restaurantController.validateAdmin,
+  restaurantController.updateRestaurantByAdmin
 );
 
 module.exports = router_bssr;

@@ -1,45 +1,43 @@
 <%-include('includes/header')%>
 <link rel="stylesheet" type="text/css" href="/css/login.css" />
 <body>
-    <form action="/resto/login" method="POST" class="login_container">
-        <div class="login_frame" style="height: 460px">
-            <div class="login_top">
-                <span>Saytga Kirish</span>
-                <div>
-                    Bosh sahifaga qaytish
-                    <a style="color: #6440fb" href="/resto">Home</a>
-                </div>
-                <p>
-                    Ro'yxatdan o'tganmisiz?
-                    <a style="color: #6440fb" href="/resto/sign-up"
-                        >Ro'yxatdan o'tish</a
-                    >
-                </p>
-            </div>
-            <div class="login_input_frame">
-                <div class="login_input_container">
-                    <label for="">Foydalanuvchining ismi:</label>
-                    <input
-                        placeholder="Foydalanuvchining ismi"
-                        name="mb_nick"
-                        type="text"
-                        value=""
-                        required
-                    />
-                </div>
-                <div class="login_input_container">
-                    <label for="">Password kiriting:</label>
-                    <input
-                        placeholder="Password"
-                        name="mb_password"
-                        type="password"
-                        value=""
-                        required
-                    />
-                </div>
-            </div>
-            <button class="login_btn" name="login" type="submit">Kirish</button>
+  <form action="/resto/login" method="POST" class="login_container">
+    <div class="login_frame" style="height: 460px">
+      <div class="login_top">
+        <span>Saytga Kirish</span>
+        <div>
+          Bosh sahifaga qaytish
+          <a style="color: #6440fb" href="/resto">Home</a>
         </div>
-    </form>
+        <p>
+          Ro'yxatdan o'tganmisiz?
+          <a style="color: #6440fb" href="/resto/sign-up">Ro'yxatdan o'tish</a>
+        </p>
+      </div>
+      <div class="login_input_frame">
+        <div class="login_input_container">
+          <label for="">Foydalanuvchining ismi:</label>
+          <input
+            placeholder="Foydalanuvchining ismi"
+            name="mb_nick"
+            type="text"
+            value=""
+            required
+          />
+        </div>
+        <div class="login_input_container">
+          <label for="">Password kiriting:</label>
+          <input
+            placeholder="Password"
+            name="mb_password"
+            type="password"
+            value=""
+            required
+          />
+        </div>
+      </div>
+      <button class="login_btn" name="login" type="submit">Kirish</button>
+    </div>
+  </form>
 </body>
 <%-include('includes/footer')%>
