@@ -3,30 +3,34 @@ const Definer = require("../lib/mistake");
 const Product = require("../models/Product");
 
 let productController = module.exports;
-// bu variablesga functionlarni yuklaymiz
+
 productController.getAllProducts = async (req, res) => {
   try {
-    console.log("GET: cont/getAllProducts");
+    console.log("POST: cont/getAllProducts");
+    const product = new Product();
+    const results = await product.getAllProductsData(req.member, req.body);
+    res.json({ state: "succeed", data: results });
   } catch (err) {
     console.log(`ERROR, cont/getAllProducts, ${err.message} `);
     res.json({ state: "fail", message: err.message });
   }
 };
 
+/*******************************************
+ **        BSSR RELATED METHODS            **
+ ********************************************/
+
 productController.addNewProduct = async (req, res) => {
   try {
     console.log("POST: cont/addNewProduct");
     assert(req.files, Definer.general_err3);
     const product = new Product();
-
-    let data = req.body; //req.body ni ichida file path yoq. U req.filesni ichida keladi.
+    let data = req.body; //req.bodyni ichida file path yoq. U reqfilesni ichida keladi.
     console.log(req.files);
-
     data.product_images = req.files.map((ele) => {
-      return ele.path.replace(/\\/g, "/"); // regular expression => regex
-      // bu usul windowsda xato borligi uchun foydalandik
+      // return ele.path;
+      return ele.path.replace(/\\/g, "/");
     });
-
     // yuqorida req fileni ichidagi filepathni array qilib request bodyga qo'shib beradi.
     const result = await product.addNewProductData(data, req.member);
     const html = `<script>

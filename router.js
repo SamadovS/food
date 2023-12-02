@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const memberController = require("./controllers/memberController");
+const productController = require("./controllers/productController");
 
-/**********************************
- *          REST API              *
- *********************************/
+/********************
+ *     REST API     *
+ ********************/
 
-// memberga oid routerlar
-
+// member related routers
 router.post("/signup", memberController.signup);
 router.post("/login", memberController.login);
 router.get("/logout", memberController.logout);
@@ -18,13 +18,12 @@ router.get(
   memberController.getChosenMember
 );
 
-// boshqa routerlar
-router.get("/menu", (req, res) => {
-  res.send("You are in Menu");
-});
+// Product related routers
 
-router.get("/community", (req, res) => {
-  res.send("You are in Menu");
-});
+router.post(
+  "/products",
+  memberController.retrieveAuthMember,
+  productController.getAllProducts
+);
 
 module.exports = router;
