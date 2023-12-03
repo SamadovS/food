@@ -11,6 +11,8 @@ memberController.signup = async (req, res) => {
     const data = req.body,
       member = new Member(),
       new_member = await member.signupData(data);
+
+    // TODO: AUTHENTICATE BASED ON JWT (json web token)
     const token = memberController.createToken(new_member);
     res.cookie("access_token", token, {
       maxAge: 6 * 3600 * 1000,
@@ -30,6 +32,7 @@ memberController.login = async (req, res) => {
     const data = req.body,
       member = new Member(),
       result = await member.loginData(data);
+
     // TODO: AUTHENTICATE BASED ON JWT (json web token)
     const token = memberController.createToken(result);
     res.cookie("access_token", token, {
