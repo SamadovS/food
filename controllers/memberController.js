@@ -1,6 +1,5 @@
 const Member = require("../models/Member");
-// controller butun proccessni boshqarib, tegishli madellarga vazifa yuklaydi.
-let memberController = module.exports; //memberControllerga turli xil metodlarni yuklash mumkin
+let memberController = module.exports;
 const jwt = require("jsonwebtoken");
 const assert = require("assert");
 const Definer = require("../lib/mistake");
