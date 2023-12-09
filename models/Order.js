@@ -93,6 +93,43 @@ class Order {
       throw new Error(Definer.order_err2);
     }
   }
+
+  async getMyOrdersData(member, query) {
+    try {
+      const mb_id = shapeIntoMongooseObjectId(member._id);
+      const order_status = query.status.toUpperCase();
+      const matches = { mb_id: mb_id, order_status: order_status };
+
+      // console.log("req.query::", query);
+      const result = await this.orderModel
+        .aggregate([
+          { $match: matches },
+          { $sort: { createdAt: -1 } },
+          {
+            $lookup: {
+              from: "orderitems",
+              localField: "_id",
+              foreignField: "order_id",
+              as: "order_items",
+            },
+          },
+          {
+            $lookup: {
+              from: "products",
+              localField: "order_items.product_id",
+              foreignField: "_id",
+              as: "product_data",
+            },
+          },
+        ])
+        .exec();
+      console.log("result:::", result);
+
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  }
 }
 
 module.exports = Order;
