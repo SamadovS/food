@@ -13,7 +13,7 @@ class Community {
     try {
       data.mb_id = shapeIntoMongooseObjectId(member._id);
       const new_article = await this.saveArticleData(data);
-      console.log("new_article:::", new_article);
+      // console.log("new_article:::", new_article);
       return new_article;
     } catch (err) {
       throw err;
