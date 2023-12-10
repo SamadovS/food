@@ -76,6 +76,10 @@ router.post(
   memberController.retrieveAuthMember,
   communityController.createArticle
 );
-
+router.get(
+  "/community/articles",
+  memberController.retrieveAuthMember,
+  communityController.getMemberArticles
+);
 uploader_member;
 module.exports = router;
