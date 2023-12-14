@@ -11,6 +11,7 @@ class Follow {
     this.memberModel = MemberModel;
   }
 
+  // FOR SUBSCRIBE
   async subscribeData(member, data) {
     try {
       assert.ok(member._id !== data.mb_id, Definer.follow_err1);
@@ -68,6 +69,32 @@ class Follow {
           )
           .exec();
       }
+      return true;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  // FOR UNSUBSCRIBE
+  async unsubscribeData(member, data) {
+    try {
+      assert.ok(member._id !== data.mb_id, Definer.follow_err1);
+
+      const subscriber_id = shapeIntoMongooseObjectId(member._id);
+
+      const follow_id = shapeIntoMongooseObjectId(data.mb_id);
+
+      const result = await this.followModel.findOneAndDelete({
+        follow_id: follow_id,
+        subscriber_id: subscriber_id,
+      });
+      // console.log("result>>>", result);
+
+      assert.ok(result, Definer.general_err2);
+
+      await this.modifyMemberFollowCounts(follow_id, "subscriber_change", -1);
+      await this.modifyMemberFollowCounts(subscriber_id, "follow_change", -1);
+      return true;
     } catch (err) {
       throw err;
     }
