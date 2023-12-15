@@ -104,4 +104,6 @@ router.post(
   memberController.retrieveAuthMember,
   followController.unsubscribe
 );
+router.get("/follow/followings", followController.getMemberFollowings);
+// auth memberga tekshirish shart emas!
 module.exports = router;
