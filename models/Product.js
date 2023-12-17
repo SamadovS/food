@@ -1,5 +1,8 @@
 const assert = require("assert");
-const { shapeIntoMongooseObjectId } = require("../lib/config");
+const {
+  shapeIntoMongooseObjectId,
+  lookup_auth_member_liked,
+} = require("../lib/config");
 const ProductModel = require("../schema/product.model");
 const Definer = require("../lib/mistake");
 const Member = require("./Member");
@@ -29,6 +32,7 @@ class Product {
           { $sort: sort },
           { $skip: (data.page * 1 - 1) * data.limit }, //pageda 1 bolsa hech narsa skip bolmasin
           { $limit: data.limit * 1 },
+          lookup_auth_member_liked(auth_mb_id),
           // todo: check auth member product likes
         ])
         .exec();
