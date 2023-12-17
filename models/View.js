@@ -70,22 +70,15 @@ class View {
     try {
       switch (group_type) {
         case "member":
-          await this.memberModel
-            .findByIdAndUpdate(
-              {
-                _id: view_ref_id,
-              },
-              { $inc: { mb_views: 1 } }
-            )
+          result = await this.memberModel
+            .findByIdAndUpdate({ _id: view_ref_id }, { $inc: { mb_views: 1 } })
             .exec();
           break;
 
         case "product":
           await this.productModel
             .findByIdAndUpdate(
-              {
-                _id: view_ref_id,
-              },
+              { _id: view_ref_id },
               { $inc: { product_views: 1 } }
             )
             .exec();
@@ -93,12 +86,7 @@ class View {
 
         case "community":
           await this.boArticleModel
-            .findByIdAndUpdate(
-              {
-                _id: view_ref_id,
-              },
-              { $inc: { art_views: 1 } }
-            )
+            .findByIdAndUpdate({ _id: view_ref_id }, { $inc: { art_views: 1 } })
             .exec();
           break;
       }

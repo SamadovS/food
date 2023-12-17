@@ -8,6 +8,8 @@ const MemberModel = require("../schema/member.model");
 const assert = require("assert");
 const bcrypt = require("bcryptjs");
 const View = require("./View");
+const Like = require("./Like");
+
 class Member {
   constructor() {
     this.memberModel = MemberModel; //(aslida mongodb= classi)
@@ -22,7 +24,7 @@ class Member {
       try {
         result = await new_member.save();
       } catch (mongo_err) {
-        throw new Error(Definer.auth_err1);
+        throw new Error(Definer.mongo_validation_err1);
       }
       result.mb_password = "";
       return result;
@@ -97,6 +99,64 @@ class Member {
         assert.ok(result, Definer.general_err1);
       }
       return true;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async likeChosenItemByMember(member, like_ref_id, group_type) {
+    try {
+      // shaping qivolamiz
+      like_ref_id = shapeIntoMongooseObjectId(like_ref_id);
+      const mb_id = shapeIntoMongooseObjectId(member._id);
+
+      const like = new Like(mb_id);
+
+      // validation qilamiz: like bosmoqchi bo'lgan target datasini
+      // validatsiyadan o'tkazmoqchimiz -> shunday data mavjudmi degan manoda
+      // like obj ichida 'validateTargetItem' metodini yaratib ->
+      // ichiga like_ref_id va group_type ni ARGUMENT sifatida pass qilamiz
+      const isValid = await like.validateTargetItem(like_ref_id, group_type);
+      // console.log("isValid:::", isValid);
+
+      // Agar validation fail b-a, handled errorni qaytaramiz
+      assert.ok(isValid, Definer.general_err2);
+
+      // validationdan tashqari 'doesExist' ni ham ishlatmoqchimiz:
+      // avval LIKE bosganmizmi-yo'qmi? shunga qarab mantiqlarni yozamiz
+
+      // doesExist
+      // bu mantiqlarni 'like-service-model' da tuzyapmiz. Uni ichidan
+      // ..'checkLikeExistence' nomli metod yasab, uni ichiga 'like_ref_id' ni pass qildik
+      const doesExist = await like.checkLikeExistence(like_ref_id);
+      console.log("doesExist>>>", doesExist);
+
+      // Agar biz LIKE bosmagan bo'lsak: 2ta mantiq yozamiz
+      // 1) Agar bosmagan bo'lsak: Like buttonni bos + modifier +1 b-i kk
+      // 2) Agar bosgan bo'lsak: Like buttonni bos + modifier -1 b-i kk
+      // 2lasini ham qiymatini data nomli variablega tenglab olamiz
+
+      let data = doesExist
+        ? await like.removeMemberLike(like_ref_id, group_type)
+        : await like.insertMemberLike(like_ref_id, group_type);
+
+      // ikkala holatda ham RESULT qaytadi, agar qaytmasa xatolik beradi:
+      assert.ok(data, Definer.general_err1);
+
+      // Obj.ni hosil qilsak:
+      const result = {
+        // datani ichidan like_groupni olamiz
+        like_group: data.like_group,
+
+        // datani ichidan like_ref_id olamiz
+        like_ref_id: data.like_ref_id,
+
+        // like_status -> doesExist orqali => bu faqat CHECKING u-n
+        // avval like bosgan b-a: 0 -> yani like 0 ga oshadi
+        // avval like bosmagan b-a: 1 -> yani like 1 ga oshadi
+        like_status: doesExist ? 0 : 1,
+      };
+      return result;
     } catch (err) {
       throw err;
     }
