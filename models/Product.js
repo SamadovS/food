@@ -75,7 +75,7 @@ class Product {
       });
       assert.ok(result, Definer.general_err1);
       console.log(result);
-      return result; //arrayda restaurant productlar= obj ni chiqaradi
+      return result;
     } catch (err) {
       throw err;
     }
@@ -83,7 +83,7 @@ class Product {
 
   async addNewProductData(data, member) {
     try {
-      data.restaurant_mb_id = shapeIntoMongooseObjectId(member._id); //datani ichida restaurant mb id hosil qilyapmiz
+      data.restaurant_mb_id = shapeIntoMongooseObjectId(member._id);
       const new_product = new this.productModel(data);
       const result = await new_product.save();
       assert.ok(result, Definer.product_err1);
@@ -99,7 +99,7 @@ class Product {
         .findOneAndUpdate({ _id: id, restaurant_mb_id: mb_id }, updated_data, {
           runValidators: true,
           lean: true,
-          returnDocument: "after", //yangilangan datani beradi. 'before' bolsa uzgarishdan keyingi datani beradi.
+          returnDocument: "after",
         })
         .exec();
       assert.ok(result, Definer.general_err1);

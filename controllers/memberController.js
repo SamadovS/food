@@ -94,32 +94,19 @@ memberController.getChosenMember = async (req, res) => {
   }
 };
 
-// FOR LIKE LOGIC
-// 3xil like bor => 1) product 2) member 3) article
 memberController.likeMemberChosen = async (req, res) => {
   try {
     console.log("POST cont/likeMemberChosen");
 
-    // bu metodni auth-memberlar ishlata oladi, qoganlarga error beradi
     assert.ok(req.member, Definer.auth_err5);
+    const member = new Member();
 
-    const member = new Member(); // member obj. kk
-
-    // "like_ref_id" kk b-i, uni req.body ichidan olamiz
-    // uni ham nomini 'like_ref_id' deb nomladik, sababi: qaysi mongodb ID
-    // ..bn belgilab olingan 1) product 2) member 3) article ga LIKE bosmoqchimiz
     const like_ref_id = req.body.like_ref_id;
-
-    // Qanday turdagi target qilyapmiz (yuqoridagi 3xil LIKE-TYPE)?
-    // Buni ham req.body ichidan 'group_type' nomi bn send qilamiz
     const group_type = req.body.group_type;
-
-    // member obj. ichidan 'likeChosenItemByMember' metodini yaratvoldik
-    //
     const result = await member.likeChosenItemByMember(
-      req.member, // memberni
-      like_ref_id, // qaysi reference id ni like qilmoqchiman
-      group_type // qaysi turdagi like
+      req.member,
+      like_ref_id,
+      group_type
     );
 
     res.json({ state: "success", data: result });

@@ -39,13 +39,11 @@ productController.addNewProduct = async (req, res) => {
     console.log("POST: cont/addNewProduct");
     assert(req.files, Definer.general_err3);
     const product = new Product();
-    let data = req.body; //req.bodyni ichida file path yoq. U reqfilesni ichida keladi.
+    let data = req.body;
     console.log(req.files);
     data.product_images = req.files.map((ele) => {
-      // return ele.path;
       return ele.path.replace(/\\/g, "/");
     });
-    // yuqorida req fileni ichidagi filepathni array qilib request bodyga qo'shib beradi.
     const result = await product.addNewProductData(data, req.member);
     const html = `<script>
                     alert("new product ${data.product_name} added successfully");
@@ -63,7 +61,6 @@ productController.updateChosenProduct = async (req, res) => {
     const product = new Product();
     const id = req.params.id;
     const result = await product.updateChosenProductData(
-      //await sababi javobni olgach keyingi kodga utadi. ungacha kutib turadi
       id,
       req.body,
       req.member._id

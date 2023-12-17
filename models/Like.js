@@ -35,7 +35,7 @@ class Like {
             .exec();
           break;
 
-        case "community": // default -> community bo'lsin
+        case "community":
         default:
           result = await this.boArticleModel
             .findOne({
@@ -54,12 +54,6 @@ class Like {
 
   async checkLikeExistence(like_ref_id) {
     try {
-      // LIKE ni check qilamiz 'like-model' orqali (ichidan)
-      // 'findOne' metod bn 'mb_id' ni izlashimiz kk
-      // 'mb_id' ni shu klassga biriktirganmiz
-      // 'like_ref_id' = 'like_ref_id' ga teng b-i kk
-      // 'like_ref_id' buyerda ishlashi u-n, like.model.da shaping qiganmiz
-
       const like = await this.likeModel
         .findOne({
           mb_id: this.mb_id,
@@ -68,31 +62,21 @@ class Like {
         .exec();
       console.log("like>>>", like);
 
-      // 1-usul: return
-      // Return qilsin: mavjud b-a -> true | if not -> false qaytarsin
-      // return like ? true : false;
-
-      // 2-usul: return
       return !!like;
     } catch (err) {
       throw err;
     }
   }
 
-  // XATOLIK BERMASLIK U-N HAR IKKISINI HOSIL QIVOLISHIMIZ KK.
-  // 2) Avval Like bosgan + uni olib tashlash (remove like)
   async removeMemberLike(like_ref_id, group_type) {
     try {
       const result = await this.likeModel
         .findOneAndDelete({
           like_ref_id: like_ref_id,
           mb_id: this.mb_id,
-          // bu mb_id ni shu class-constructoridan olyapmiz
         })
         .exec();
-      // exec() dan kn -> likes collection dagi like ni delete qilyapmiz
 
-      // modify qil: modifier = -1, chunki like ni remove qilishi kk
       await this.modifyItemLikeCounts(like_ref_id, group_type, -1);
 
       return result;
@@ -101,25 +85,16 @@ class Like {
     }
   }
 
-  // 1) Avval Like bosmagan + unga like bosish (insert like)
   async insertMemberLike(like_ref_id, group_type) {
     try {
-      // 'like_ref_id' va 'like_group'ni "like.model" dan qarab olyapmiz
       const new_like = await this.likeModel({
-        mb_id: this.mb_id, // shu class constructoriga biriktirgan edik
+        mb_id: this.mb_id,
         like_ref_id: like_ref_id,
         like_group: group_type,
       });
 
-      // new_like ni SAVE qilish kk
       const result = await new_like.save();
-
-      // SAVE dan keyin: LIKE lar sonini oshirish kk
-      // 1ta METOD kk bo'larkan => modifyItemLikeCounts (pastda)
-
-      // Modify target likes count
       await this.modifyItemLikeCounts(like_ref_id, group_type, 1);
-      // buni resulti kk emas
 
       return result;
     } catch (err) {
@@ -128,14 +103,10 @@ class Like {
     }
   }
 
-  // Quyidagi modify metodni likelar sonini ham + increase qilishda,
-  // ham - decrease qilishda ishlatamiz
   async modifyItemLikeCounts(like_ref_id, group_type, modifier) {
-    // Uni ichiga 'modifier' pass qilishimiz kk + switchdan foydalanamiz
     try {
       switch (group_type) {
         case "member":
-          // member b-a -> memberModel dan izlaymiz
           await this.memberModel
             .findByIdAndUpdate(
               { _id: like_ref_id },

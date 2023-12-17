@@ -82,7 +82,7 @@ restaurantController.signupProcess = async (req, res) => {
       result = await member.signupData(new_member);
     assert.ok(result, Definer.general_err1);
 
-    req.session.member = result; //app js da yasalgan session = memberiga signup data= resultini save qilamiz.
+    req.session.member = result;
     res.redirect("/resto/products/menu");
   } catch (err) {
     res.json({ state: "fail", message: err.message });
@@ -108,7 +108,7 @@ restaurantController.loginProcess = async (req, res) => {
       member = new Member(),
       result = await member.loginData(data);
 
-    req.session.member = result; //session ichida member obj hosil qilib resultni yuklaymiz
+    req.session.member = result;
     req.session.save(() => {
       result.mb_type === "ADMIN"
         ? res.redirect("/resto/all-restaurant")
@@ -135,7 +135,7 @@ restaurantController.logout = (req, res) => {
 
 restaurantController.validateAuthRestaurant = (req, res, next) => {
   if (req.session?.member?.mb_type === "RESTAURANT") {
-    req.member = req.session.member; //brauser cockiesga yozadi
+    req.member = req.session.member;
     next();
   }
   // res.redirect("/resto");
@@ -156,7 +156,7 @@ restaurantController.checkSessions = (req, res) => {
 
 restaurantController.validateAdmin = (req, res, next) => {
   if (req.session?.member?.mb_type === "ADMIN") {
-    req.member = req.session.member; //brauser cockiesga yozadi
+    req.member = req.session.member;
     next();
   } else {
     const html = `<script>
