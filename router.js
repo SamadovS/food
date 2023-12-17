@@ -105,5 +105,12 @@ router.post(
   followController.unsubscribe
 );
 router.get("/follow/followings", followController.getMemberFollowings);
-// auth memberga tekshirish shart emas!
+router.get(
+  "/follow/followers",
+  memberController.retrieveAuthMember,
+  // yuqoridan farqli o'laroq, kim req. qilayotgani kk. menga follower bo'lgan
+  // userga, bu authenticated user follow bo'lganmi, yo'qmi?
+  followController.getMemberFollowers
+);
+
 module.exports = router;
