@@ -139,71 +139,35 @@ class Follow {
   async getMemberFollowersData(member, inquiry) {
     try {
       const follow_id = shapeIntoMongooseObjectId(inquiry.mb_id);
-      // bizga endi follow_id kk. (inquiry ichidan mb_id)ni olamiz
-      // buni FOLLOWS degan collectiondan izlaymiz
-      // Biz ko'rsatgan mb_id = follow_id b-i kk.
-      // Shu mb_idga subscriber-follow qilgan userlarni topmoqchimiz
-
       const page = inquiry.page * 1;
       const limit = inquiry.limit * 1;
 
       let aggregateQuery = [
-        { $match: { follow_id: follow_id } }, // follow_id = b-i kk follow_id ga
-        { $sort: { createdAt: -1 } }, // eng oxiridan boshlab chiqar, degani
-        { $skip: (page - 1) * limit }, //
+        { $match: { follow_id: follow_id } },
+        { $sort: { createdAt: -1 } },
+        { $skip: (page - 1) * limit },
         { $limit: limit },
         {
           $lookup: {
-            from: "members", // yana MEMBERS col-tion dan izla deyapmiz
-            localField: "subscriber_id", // LocalFieldan nimani topish kk?
-            // matching orqali query qib qidirgandagi => subscriber_id ni olsin
-            foreignField: "_id", // yana MEMBERS col-tion dan _id ni izla deyapmiz
-            as: "subscriber_member_data", // shunaqa nomlab oldik
+            from: "members",
+            localField: "subscriber_id",
+
+            foreignField: "_id",
+            as: "subscriber_member_data",
           },
         },
-        // LOOKUP codelarida result ARRAY orqali keladi
-        // subscriber_member_data ga 1ta data kelgani u-n, bizga array [] kk emas
-        // shuni chun $unwind bn u arrayni olib tashayapmiz, tushirib qoldiryapmiz
+
         { $unwind: "$subscriber_member_data" },
       ];
 
-      // qo'shimcha mantiq-condition ni yozamiz:
-      // men subscriberimga, FOLLOW BACK bo'lganmanmi, yo'qmi?
-
-      // following followed back to subscriber
-      // Uni qachon tekshiradi? => IF bn shart kiritaman:
-
-      // Agar authenticated bo'lgan user (mas, damir bo'lib) req. qilayotgan b-a
-      // + shu req. qilayotgan user o'zining followerlar ruyxatini req. qilayotgan b-a,
-      // mantiq shuyerdan path b-i.
-
-      // Auth-user o'zining followerlar ruyxatini req. qilayotgan payti,
-      // bizga FOLLOW-BACK datani qaytarsin
-
       if (member && member._id === inquiry.mb_id) {
-        // console.log("PASSED");
-        // qo'shimcha mantiqni (LOOKUP syntaxni) config.js da yozib olamiz
-        // SABABI: mantiq uzunroq b-i, va buyerni iloji boricha CLEAN saqla
-
-        aggregateQuery.push(lookup_auth_member_following(follow_id));
-      } // BU MANTIQ ===> MENGA FOLLOW QILGAN USERSGA FOLLOW-BACK QILGANMANMI?
-      // men 'martin' user b-b 'damir'ga follow bo'lganman, 'damir' 'martin'ga
-      // ..subscribe bo'lgan
-      // lookup_auth_member_following => get Member Followers rest api ni
-      // ..ishlatayotgan paytimiz aynan authenticated bo'lgan user o'zining followerlar
-      // ..listini request qilganda ishga tushadigan biznes logic edi
+        aggregateQuery.push(lookup_auth_member_following(follow_id, "follows"));
+      }
 
       const result = await this.followModel.aggregate(aggregateQuery).exec();
-      // aggregate u-n hamma narsani (aggregateQuery)ni yuqorida taxlab oldik,
-      // Bunday oldindan yaratib olishimizga sabab: following followed back to subscriber
-      // Bu mantiqni ichidagi aggregateQuery ga yana qo'shimcha condition yuklaymiz
-
       assert.ok(result, Definer.follow_err3);
-      // natijani assert qilamiz: resultni check qil, if not follow_err3 through qilamiz
 
       return result;
-      // return qilgan result ni, followControllerdagi res.jsondagi DATA elementigaga
-      // biriktirib, json formatda response qilyapmiz
     } catch (err) {
       throw err;
     }

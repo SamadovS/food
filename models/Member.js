@@ -1,5 +1,8 @@
 // MEMBER SERVICE MODEL (file nomi js shu fileni class sifatida qabul qilishi uchun bosh harfda yozildi)
-const { shapeIntoMongooseObjectId } = require("../lib/config");
+const {
+  shapeIntoMongooseObjectId,
+  lookup_auth_member_following,
+} = require("../lib/config");
 const Definer = require("../lib/mistake");
 const MemberModel = require("../schema/member.model");
 const assert = require("assert");
@@ -49,19 +52,24 @@ class Member {
 
   async getChosenMemberData(member, id) {
     try {
+      const auth_mb_id = shapeIntoMongooseObjectId(member?._id);
       id = shapeIntoMongooseObjectId(id);
       console.log("member: :", member);
+
+      let aggregateQuery = [
+        { $match: { _id: id, mb_status: "ACTIVE" } },
+        { $unset: "mb_password" },
+      ];
+
       if (member) {
         await this.viewChosenItemByMember(member, id, "member");
-        // condition if not seen before
+        // todo: check auth member liked the chosen member
+        aggregateQuery.push(
+          lookup_auth_member_following(auth_mb_id, "members")
+        );
       }
-      const result = await this.memberModel
-        .aggregate([
-          { $match: { _id: id, mb_status: "ACTIVE" } },
-          { $unset: "mb_password" },
-          // todo: check auth member liked the chosen member
-        ])
-        .exec();
+
+      const result = await this.memberModel.aggregate(aggregateQuery).exec();
 
       assert.ok(result, Definer.general_err2);
       return result[0];
