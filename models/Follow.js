@@ -139,6 +139,7 @@ class Follow {
   async getMemberFollowersData(member, inquiry) {
     try {
       const follow_id = shapeIntoMongooseObjectId(inquiry.mb_id);
+
       const page = inquiry.page * 1;
       const limit = inquiry.limit * 1;
 
@@ -151,7 +152,6 @@ class Follow {
           $lookup: {
             from: "members",
             localField: "subscriber_id",
-
             foreignField: "_id",
             as: "subscriber_member_data",
           },
