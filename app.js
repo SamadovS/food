@@ -16,6 +16,7 @@ const store = new MongoDBStore({
 
 // 1: Entry codes
 app.use(express.static("public"));
+app.use("/uploads", express.static(__dirname + "/uploads"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
