@@ -47,7 +47,8 @@ app.use(function (req, res, next) {
 });
 
 // 3: Views codes
-app.set("views", path.join(__dirname, "views"));
+// app.set("views", path.join(__dirname, "views"));
+app.set("views", "views");
 app.set("view engine", "ejs");
 
 // 4: Routing codes
