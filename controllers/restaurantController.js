@@ -75,9 +75,11 @@ restaurantController.signupProcess = async (req, res) => {
   try {
     console.log("POST: cont/signupProcess");
     assert(req.file, Definer.general_err3);
+
     let new_member = req.body;
     new_member.mb_type = "RESTAURANT";
     new_member.mb_image = req.file.path.replace(/\\/g, "/");
+
     const member = new Member(),
       result = await member.signupData(new_member);
     assert.ok(result, Definer.general_err1);
