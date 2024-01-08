@@ -59,7 +59,7 @@ class Member {
       id = shapeIntoMongooseObjectId(id);
       console.log("member: :", member);
 
-      let aggregateQuery = [
+      let aggregationQuery = [
         { $match: { _id: id, mb_status: "ACTIVE" } },
         { $unset: "mb_password" },
       ];
@@ -68,13 +68,13 @@ class Member {
         await this.viewChosenItemByMember(member, id, "member");
 
         // todo: check auth member liked the chosen member
-        aggregateQuery.push(lookup_auth_member_liked(auth_mb_id));
-        aggregateQuery.push(
+        aggregationQuery.push(lookup_auth_member_liked(auth_mb_id));
+        aggregationQuery.push(
           lookup_auth_member_following(auth_mb_id, "members")
         );
       }
 
-      const result = await this.memberModel.aggregate(aggregateQuery).exec();
+      const result = await this.memberModel.aggregate(aggregationQuery).exec();
 
       assert.ok(result, Definer.general_err2);
       return result[0];
@@ -112,8 +112,8 @@ class Member {
     try {
       like_ref_id = shapeIntoMongooseObjectId(like_ref_id);
       const mb_id = shapeIntoMongooseObjectId(member._id);
-      const like = new Like(mb_id);
 
+      const like = new Like(mb_id);
       const isValid = await like.validateTargetItem(like_ref_id, group_type);
       // console.log("isValid:::", isValid);
       assert.ok(isValid, Definer.general_err2);
