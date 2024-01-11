@@ -1,4 +1,6 @@
 console.log("Starting Web Server");
+
+const http = require("http");
 const express = require("express");
 const app = express();
 const router = require("./router");
@@ -55,4 +57,39 @@ app.set("view engine", "ejs");
 app.use("/resto", router_bssr); // for admin and restaurant users
 app.use("/", router); // for clients
 
-module.exports = app;
+const server = http.createServer(app);
+
+// start: SOCKET.IO BACKEND SERVER
+const io = require("socket.io")(server, {
+  serveClient: false,
+  origins: "*:*",
+  transport: ["websocket", "xhr-polling"],
+});
+
+let online_users = 0;
+io.on("connection", function (socket) {
+  online_users++;
+  console.log(("new user, total:", online_users));
+
+  socket.emit("greetMsg", { text: "welcome" });
+  io.emit("infoMsg", { total: online_users });
+
+  socket.on("disconnect", function () {
+    online_users--;
+    socket.broadcast.emit("infoMsg", { total: online_users });
+    console.log(("client disconnected, total:", online_users));
+  });
+
+  socket.on("createMsg", function (data) {
+    console.log(("data", data));
+    io.emit("newMsg", data);
+  });
+});
+
+// socket.emit(); => sending msg to connected one user
+// socket.broadcast.emit(); => sending msg to other users, except that ONE USER
+// io.emit(); => ending msg to all users
+
+// finish: SOCKET.IO BACKEND SERVER
+
+module.exports = server;
